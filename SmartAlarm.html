@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAlarm</title>
+    <style>
+        /* Variables CSS para colores */
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --background-color: #f5f5f5;
+            --text-color: #333;
+            --card-color: white;
+        }
+
+        /* Estilos generales */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: filter 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--card-color);
+            min-height: 100vh;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .container.with-nav {
+            padding-bottom: 90px;
+        }
+
+        /* Títulos */
+        h1, h2, h3 {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        /* Pantallas de login y registro */
+        .login-screen, .register-screen {
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Formulario */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Botones generales */
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid #000000;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .link {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-top: 15px;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        /* Pantalla principal */
+        .main-screen {
+            display: none;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Resumen de alarmas */
+        .alarm-summary {
+            background-color: var(--primary-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #000000;
+        }
+
+        .alarm-summary h3 {
+            color: #000000;
+            margin-bottom: 0;
+            font-size: 24px;
+        }
+
+        /* Items de las alarmas */
+        .alarm-item {
+            background-color: var(--card-color);
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .alarm-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .alarm-name {
+            font-weight: bold;
+        }
+
+        .alarm-distance {
+            color: #7f8c8d;
+        }
+
+        .alarm-time {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .alarm-days {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* Estado de la alarma */
+        .alarm-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-top: 5px;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        .active {
+            background-color: #e8f6f3;
+            color: #000000;
+        }
+
+        .inactive {
+            background-color: var(--accent-color);
+            color: #000000;
+        }
+
+        /* Botón de añadir alarma */
+        .add-alarm-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid #000000;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .add-alarm-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* Botón de cerrar sesión */
+        .logout-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: 2px solid #000000;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin: 30px 0 20px 0;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Pantalla de nueva alarma */
+        .new-alarm-screen {
+            display: none;
+        }
+
+        .alarm-selection-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--secondary-color);
+        }
+
+        /* Grupos de opciones */
+        .option-group {
+            margin-bottom: 25px;
+        }
+
+        .option-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Selectores personalizados */
+        .select-box {
+            position: relative;
+            width: 100%;
+        }
+
+        .select-header {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .select-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none;
+        }
+
+        .select-option {
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .select-option:hover {
+            background-color: #f5f5f5;
+        }
+
+        .select-option:last-child {
+            border-bottom: none;
+        }
+
+        /* Lista de opciones */
+        .option-list {
+            list-style-type: none;
+        }
+
+        .option-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .option-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Toggles */
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .toggle-label {
+            font-weight: bold;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Botones de selección de tipo de alarma */
+        .alarm-type-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: 2px solid #000000;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 25px;
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .alarm-type-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .alarm-type-btn h3 {
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .alarm-type-btn p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+        }
+
+        /* Pantalla de notificaciones */
+        .notifications-screen {
+            display: none;
+        }
+
+        .notification-header {
+            margin-bottom: 25px;
+        }
+
+        .notification-item {
+            padding: 15px;
+            border: 2px solid #000000;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        /* Pantalla de ajustes */
+        .settings-screen {
+            display: none;
+        }
+
+        .language-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .language-option {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .language-option.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Configuración de alarma por ubicación */
+        .location-instruction {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 25px;
+            color: var(--secondary-color);
+        }
+
+        .bold-toggle-label {
+            font-weight: bold;
+        }
+
+        /* Selector de hora */
+        .time-instruction {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .time-selector {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .time-input {
+            width: 70px;
+            padding: 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .time-separator {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            margin: 0 5px;
+        }
+
+        /* Navegación */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            border-top: 2px solid #000000;
+            max-width: 400px;
+            margin: 0 auto;
+            z-index: 100;
+        }
+
+        .nav-bar.hidden {
+            display: none;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px 15px;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            min-width: 80px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: #e9ecef;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+            background-color: #e3f2fd;
+            font-weight: bold;
+        }
+
+        .nav-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        /* Filtros de daltonismo */
+        .daltonism-protanopia {
+            filter: url('#protanopia');
+        }
+
+        .daltonism-deuteranopia {
+            filter: url('#deuteranopia');
+        }
+
+        .daltonism-tritanopia {
+            filter: url('#tritanopia');
+        }
+
+        /* Efectos específicos para cada tipo de daltonismo */
+        body.protanopia-filter {
+            filter: hue-rotate(-50deg) saturate(0.8) brightness(1.1) contrast(1.1);
+            --primary-color: #4a7ba6;
+            --secondary-color: #5d8c5d;
+            --accent-color: #e67e22;
+            --background-color: #f0f5f5;
+        }
+
+        body.deuteranopia-filter {
+            filter: hue-rotate(60deg) saturate(0.7) contrast(1.1) brightness(1.05);
+            --primary-color: #3d5a8a;
+            --secondary-color: #b85c5c;
+            --accent-color: #8e44ad;
+            --background-color: #f5f0f0;
+        }
+
+        body.tritanopia-filter {
+            filter: hue-rotate(180deg) saturate(0.6) brightness(1.05) contrast(1.05);
+            --primary-color: #d35400;
+            --secondary-color: #27ae60;
+            --accent-color: #8e44ad;
+            --background-color: #f5f5f0;
+        }
+
+        /* ===== ESTILOS DEL ASISTENTE IA ===== */
+        /* Botón del asistente */
+        .assistant-btn {
+            background: var(--primary-color);
+            color: white;
+            border: 2px solid #000000;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .assistant-btn:hover {
+            background: #2980b9;
+            transform: scale(1.1);
+        }
+
+        /* Contenedor del asistente */
+        .assistant-container {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 320px;
+            background: var(--card-color);
+            border: 2px solid #000000;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .assistant-header {
+            background: linear-gradient(135deg, var(--primary-color), #2980b9);
+            color: white;
+            padding: 12px 15px;
+            border-radius: 13px 13px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .assistant-header h3 {
+            color: white;
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .close-assistant {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .close-assistant:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .assistant-messages {
+            height: 280px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 85%;
+            word-wrap: break-word;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            background: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+            border-bottom-right-radius: 5px;
+        }
+
+        .assistant-message {
+            background: white;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            border-bottom-left-radius: 5px;
+        }
+
+        .assistant-input {
+            display: flex;
+            padding: 12px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            gap: 8px;
+        }
+
+        #assistantInput {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        #assistantInput:focus {
+            border-color: var(--primary-color);
+        }
+
+        #sendMessage {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #sendMessage:hover {
+            background: #2980b9;
+        }
+
+        /* Indicador de escritura */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #aaa;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        /* Mejoras responsive para el asistente */
+        @media (max-width: 450px) {
+            .assistant-container {
+                width: 90%;
+                right: 5%;
+                bottom: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainContainer">
+        <!-- Pantalla de inicio de sesión -->
+        <div class="login-screen" id="loginScreen">
+            <h2>Inicio de Sesión</h2>
+            <p>Inicia sesión con tu cuenta de SmartAlarm</p>
+            
+            <div class="form-group">
+                <label for="loginEmail">Email</label>
+                <input type="email" id="loginEmail" value="SmartAlarm@gmail.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="loginPassword">Contraseña</label>
+                <input type="password" id="loginPassword" placeholder="Introduce aquí tu contraseña">
+            </div>
+            
+            <button class="btn" id="loginBtn">Iniciar Sesión</button>
+            
+            <a href="#" class="link" id="goToRegister">¿No tienes cuenta? Regístrate</a>
+        </div>
+        
+        <!-- Pantalla de registro -->
+        <div class="register-screen" id="registerScreen" style="display: none;">
+            <h2>Inicio de Sesión</h2>
+            <p>Date de alta rellenando los siguientes datos</p>
+            
+            <div class="form-group">
+                <label for="registerName">Nombre</label>
+                <input type="text" id="registerName" value="John Wick">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerEmail">Email</label>
+                <input type="email" id="registerEmail" value="SmartAlarm@gmail.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="registerPassword">Contraseña</label>
+                <input type="password" id="registerPassword" placeholder="Introduce aquí tu contraseña">
+            </div>
+            
+            <button class="btn" id="registerBtn">Registrarse</button>
+            
+            <a href="#" class="link" id="goToLogin">¿Ya tienes cuenta? Inicia Sesión</a>
+        </div>
+        
+        <!-- Pantalla principal -->
+        <div class="main-screen" id="mainScreen">
+            <div class="header">
+                <h1>Inicio</h1>
+                <button class="assistant-btn" id="assistantBtnMain">🤖</button>
+            </div>
+            
+            <div class="alarm-summary">
+                <h3>3 alarmas activas</h3>
+            </div>
+            
+            <div class="alarm-list">
+                <div class="alarm-item">
+                    <div class="alarm-header">
+                        <span class="alarm-name">Salon</span>
+                        <span class="alarm-distance">0 m</span>
+                    </div>
+                    <div class="alarm-time">07:30</div>
+                    <div class="alarm-days">Lu, Ma, Mi, Ju</div>
+                    <div class="alarm-status inactive">Desactivada</div>
+                </div>
+                
+                <div class="alarm-item">
+                    <div class="alarm-header">
+                        <span class="alarm-name">Oficina</span>
+                        <span class="alarm-distance">7.8 Km</span>
+                    </div>
+                    <div class="alarm-time">09:00</div>
+                    <div class="alarm-days">Lu, Mi, Vi</div>
+                    <div class="alarm-status active">Activa</div>
+                </div>
+                
+                <div class="alarm-item">
+                    <div class="alarm-header">
+                        <span class="alarm-name">Garage</span>
+                        <span class="alarm-distance">30 m</span>
+                    </div>
+                    <div class="alarm-time">08:00</div>
+                    <div class="alarm-days">Lu, Mi, Vi</div>
+                    <div class="alarm-status active">Activa</div>
+                </div>
+                
+                <div class="alarm-item">
+                    <div class="alarm-header">
+                        <span class="alarm-name">Habitacion</span>
+                        <span class="alarm-distance">15 m</span>
+                    </div>
+                    <div class="alarm-time">07:00</div>
+                    <div class="alarm-days">Lu, Ma, Mi, Ju, Vi</div>
+                    <div class="alarm-status active">Activa</div>
+                </div>
+            </div>
+            
+            <button class="add-alarm-btn" id="addAlarmBtn">Añadir alarma</button>
+        </div>
+        
+        <!-- Pantalla de nueva alarma -->
+        <div class="new-alarm-screen" id="newAlarmScreen">
+            <div class="header">
+                <h1>Nueva Alarma</h1>
+                <button class="assistant-btn" id="assistantBtnNew">🤖</button>
+            </div>
+            
+            <p class="alarm-selection-title">Elija como quiere configurar su alarma</p>
+            
+            <div class="option-group">
+                <button class="alarm-type-btn" id="locationAlarm">
+                    <h3>Configurar alarma por ubicación</h3>
+                    <p>Puedes configurar tu alarma al entrar o salir de cierto lugar o para ciertas ubicaciones determinadas</p>
+                </button>
+                
+                <button class="alarm-type-btn" id="normalAlarm">
+                    <h3>Configurar alarma normal</h3>
+                    <p>Puedes configurar tu alarma de forma clásica para tareas cotidianas</p>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Pantalla de configuración de alarma por ubicación -->
+        <div class="new-alarm-screen" id="locationAlarmScreen" style="display: none;">
+            <div class="header">
+                <h1>Nueva Alarma</h1>
+                <button class="assistant-btn" id="assistantBtnLocation">🤖</button>
+            </div>
+            
+            <p class="location-instruction">Introduzca un punto en el mapa donde quiere configurar su alarma</p>
+            
+            <div class="form-group">
+                <input type="text" placeholder="Escriba la ubicación">
+            </div>
+            
+            <!-- Selector de hora para alarma por ubicación -->
+            <p class="time-instruction">Establezca una hora para la alarma</p>
+            
+            <div class="time-selector">
+                <input type="text" class="time-input" id="locationHours" maxlength="2" placeholder="07" value="07">
+                <span class="time-separator">:</span>
+                <input type="text" class="time-input" id="locationMinutes" maxlength="2" placeholder="30" value="30">
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Tono</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Clásico</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Clásico</div>
+                        <div class="select-option">Melodico</div>
+                        <div class="select-option">Doorbell</div>
+                        <div class="select-option">Cascade</div>
+                        <div class="select-option">Sunrise</div>
+                        <div class="select-option">Walk Home</div>
+                        <div class="select-option">Personalizado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Etiqueta</div>
+                <input type="text" placeholder="Introduzca un nombre de etiqueta">
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Activar alarma al ...</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Seleccione una opción</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Entrar en el punto seleccionado</div>
+                        <div class="select-option">Salir del punto seleccionado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Desactivar alarma al ...</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Seleccione una opción</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Entrar en el punto seleccionado</div>
+                        <div class="select-option">Salir del punto seleccionado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toggle-group">
+                <span class="bold-toggle-label">Desactivar alarma por voz</span>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Desactivar alarma por movimiento</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Seleccione una opción</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Activado</div>
+                        <div class="select-option">Desactivado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toggle-group">
+                <span class="bold-toggle-label">Luces parpadeantes</span>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <button class="btn">Guardar Alarma</button>
+        </div>
+        
+        <!-- Pantalla de configuración de alarma normal -->
+        <div class="new-alarm-screen" id="normalAlarmScreen" style="display: none;">
+            <div class="header">
+                <h1>Nueva Alarma</h1>
+                <button class="assistant-btn" id="assistantBtnNormal">🤖</button>
+            </div>
+            
+            <p class="time-instruction">Establezca una hora para configurar su alarma</p>
+            
+            <!-- Selector de hora -->
+            <div class="time-selector">
+                <input type="text" class="time-input" id="normalHours" maxlength="2" placeholder="07" value="07">
+                <span class="time-separator">:</span>
+                <input type="text" class="time-input" id="normalMinutes" maxlength="2" placeholder="30" value="30">
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Repetir</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Seleccione días</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Lunes</div>
+                        <div class="select-option">Martes</div>
+                        <div class="select-option">Miércoles</div>
+                        <div class="select-option">Jueves</div>
+                        <div class="select-option">Viernes</div>
+                        <div class="select-option">Sábado</div>
+                        <div class="select-option">Domingo</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Tono</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Clásico</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Clásico</div>
+                        <div class="select-option">Melodico</div>
+                        <div class="select-option">Doorbell</div>
+                        <div class="select-option">Cascade</div>
+                        <div class="select-option">Sunrise</div>
+                        <div class="select-option">Walk Home</div>
+                        <div class="select-option">Personalizado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Vibración</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Personalizada</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Vibración Larga</div>
+                        <div class="select-option">Vibración Corta</div>
+                        <div class="select-option">Vibración Intermitente</div>
+                        <div class="select-option">Vibración Intensa</div>
+                        <div class="select-option">Vibración Suave</div>
+                        <div class="select-option">Vibración Zig-Zag</div>
+                        <div class="select-option">Personalizado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Volumen</div>
+                <input type="range" min="0" max="100" value="50" style="width: 100%;">
+            </div>
+            
+            <div class="toggle-group">
+                <span class="bold-toggle-label">Volumen progresivo</span>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Etiqueta</div>
+                <input type="text" placeholder="Introduzca un nombre de etiqueta">
+            </div>
+            
+            <div class="toggle-group">
+                <span class="bold-toggle-label">Desactivar alarma por voz</span>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Desactivar alarma por movimiento</div>
+                <div class="select-box">
+                    <div class="select-header">
+                        <span>Seleccione una opción</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option">Activado</div>
+                        <div class="select-option">Desactivado</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="toggle-group">
+                <span class="bold-toggle-label">Luces parpadeantes</span>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <button class="btn">Guardar Alarma</button>
+        </div>
+        
+        <!-- Pantalla de notificaciones -->
+        <div class="notifications-screen" id="notificationsScreen" style="display: none;">
+            <div class="header">
+                <h1>Notificaciones</h1>
+                <button class="assistant-btn" id="assistantBtnNotifications">🤖</button>
+            </div>
+            
+            <div class="notification-header">
+                <p><strong>Tiene 4 notificaciones pendientes</strong></p>
+            </div>
+            
+            <div class="notification-list">
+                <div class="notification-item">
+                    <p>Se ha desactivado su alarma en Salon</p>
+                </div>
+                <div class="notification-item">
+                    <p>Se ha activado su alarma en Garage</p>
+                </div>
+                <div class="notification-item">
+                    <p>Se ha activado su alarma en Oficina</p>
+                </div>
+                <div class="notification-item">
+                    <p>Se ha activado su alarma en Habitación</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pantalla de ajustes -->
+        <div class="settings-screen" id="settingsScreen" style="display: none;">
+            <div class="header">
+                <h1>Ajustes</h1>
+                <button class="assistant-btn" id="assistantBtnSettings">🤖</button>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Idioma</div>
+                <div class="language-options">
+                    <div class="language-option active">Español</div>
+                    <div class="language-option">English</div>
+                    <div class="language-option">Deutsch</div>
+                    <div class="language-option">Italiano</div>
+                    <div class="language-option">Portugués</div>
+                    <div class="language-option">Románá</div>
+                    <div class="language-option">Pyccкий</div>
+                </div>
+            </div>
+            
+            <!-- Selector de filtro de daltonismo -->
+            <div class="option-group">
+                <div class="option-title">Filtro de Daltonismo</div>
+                <div class="select-box" id="daltonismFilter">
+                    <div class="select-header">
+                        <span>Desactivado</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="select-options">
+                        <div class="select-option" data-filter="none">Desactivado</div>
+                        <div class="select-option" data-filter="protanopia">Protanopía</div>
+                        <div class="select-option" data-filter="deuteranopia">Deuteranopía</div>
+                        <div class="select-option" data-filter="tritanopia">Tritanopía</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Volumen de interacción</div>
+                <input type="range" min="0" max="100" value="50" style="width: 100%;">
+            </div>
+            
+            <div class="toggle-group">
+                <span class="toggle-label">Control de la aplicación por voz</span>
+                <label class="toggle">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="option-group">
+                <div class="option-title">Ajustes de cuenta</div>
+                <p>Para configurar su cuenta y usuario dirígase a <strong>www.SmartAlarm.com</strong></p>
+            </div>
+            
+            <!-- Botón de Cerrar Sesión -->
+            <button class="logout-btn" id="logoutBtn">Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <!-- Barra de navegación -->
+    <div class="nav-bar hidden" id="navBar">
+        <div class="nav-item active" id="navHome">
+            <div class="nav-label">Inicio</div>
+        </div>
+        <div class="nav-item" id="navNotifications">
+            <div class="nav-label">Notificaciones</div>
+        </div>
+        <div class="nav-item" id="navSettings">
+            <div class="nav-label">Ajustes</div>
+        </div>
+    </div>
+
+    <!-- Contenedor del Asistente IA -->
+    <div class="assistant-container" id="assistantContainer">
+        <div class="assistant-header">
+            <h3>🤖 Asistente SmartAlarm</h3>
+            <button class="close-assistant" id="closeAssistant">×</button>
+        </div>
+        <div class="assistant-messages" id="assistantMessages">
+            <!-- Los mensajes aparecerán aquí dinámicamente -->
+        </div>
+        <div class="assistant-input">
+            <input type="text" id="assistantInput" placeholder="Pregunta algo al asistente...">
+            <button id="sendMessage">➤</button>
+        </div>
+    </div>
+
+    <!-- SVG Filters para daltonismo -->
+    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" style="display:none;">
+        <defs>
+            <!-- Filtro para Protanopía -->
+            <filter id="protanopia">
+                <feColorMatrix type="matrix" values="0.567, 0.433, 0,     0, 0
+                                                      0.558, 0.442, 0,     0, 0
+                                                      0,     0.242, 0.758, 0, 0
+                                                      0,     0,     0,     1, 0"/>
+            </filter>
+            
+            <!-- Filtro para Deuteranopía -->
+            <filter id="deuteranopia">
+                <feColorMatrix type="matrix" values="0.625, 0.375, 0,     0, 0
+                                                      0.7,   0.3,   0,     0, 0
+                                                      0,     0.3,   0.7,   0, 0
+                                                      0,     0,     0,     1, 0"/>
+            </filter>
+            
+            <!-- Filtro para Tritanopía -->
+            <filter id="tritanopia">
+                <feColorMatrix type="matrix" values="0.95, 0.05,  0,     0, 0
+                                                      0,    0.433, 0.567, 0, 0
+                                                      0,    0.475, 0.525, 0, 0
+                                                      0,    0,     0,     1, 0"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <script>
+        // ===== ASISTENTE IA PARA SMARTALARM =====
+        class SmartAlarmAssistant {
+            constructor() {
+                this.conversation = [];
+                this.currentScreen = 'main';
+                this.isTyping = false;
+                this.initialize();
+            }
+
+            initialize() {
+                // Elementos del DOM
+                this.assistantContainer = document.getElementById('assistantContainer');
+                this.assistantMessages = document.getElementById('assistantMessages');
+                this.assistantInput = document.getElementById('assistantInput');
+                this.sendMessageBtn = document.getElementById('sendMessage');
+                this.closeAssistant = document.getElementById('closeAssistant');
+                
+                // Botones de asistente en diferentes pantallas
+                this.assistantButtons = [
+                    'assistantBtnMain', 'assistantBtnNew', 'assistantBtnLocation',
+                    'assistantBtnNormal', 'assistantBtnNotifications', 'assistantBtnSettings'
+                ];
+                
+                // Inicializar eventos
+                this.setupEventListeners();
+                
+                // Mensaje de bienvenida
+                setTimeout(() => {
+                    this.addMessage('assistant', '¡Hola! Soy tu asistente de SmartAlarm. 🤖\n\nPuedo ayudarte a:\n• Crear alarmas nuevas\n• Configurar alarmas existentes\n• Ajustar preferencias\n• Resolver problemas\n\n¿En qué puedo ayudarte hoy?');
+                }, 1000);
+            }
+
+            setupEventListeners() {
+                // Botón de enviar mensaje
+                this.sendMessageBtn?.addEventListener('click', () => this.sendMessage());
+                
+                // Enter para enviar
+                this.assistantInput?.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+                
+                // Cerrar asistente
+                this.closeAssistant?.addEventListener('click', () => this.hideAssistant());
+                
+                // Botones de asistente en diferentes pantallas
+                this.assistantButtons.forEach(btnId => {
+                    const btn = document.getElementById(btnId);
+                    if (btn) {
+                        btn.addEventListener('click', () => this.toggleAssistant());
+                    }
+                });
+                
+                // Cerrar al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.assistant-container') && 
+                        !e.target.closest('.assistant-btn') &&
+                        this.assistantContainer.style.display === 'block') {
+                        this.hideAssistant();
+                    }
+                });
+            }
+
+            toggleAssistant() {
+                if (this.assistantContainer.style.display === 'block') {
+                    this.hideAssistant();
+                } else {
+                    this.showAssistant();
+                }
+            }
+
+            showAssistant() {
+                this.assistantContainer.style.display = 'block';
+                this.updateCurrentScreen();
+                this.assistantInput.focus();
+            }
+
+            hideAssistant() {
+                this.assistantContainer.style.display = 'none';
+            }
+
+            updateCurrentScreen() {
+                // Detectar en qué pantalla está el usuario
+                if (document.getElementById('mainScreen')?.style.display === 'block') {
+                    this.currentScreen = 'main';
+                } else if (document.getElementById('newAlarmScreen')?.style.display === 'block') {
+                    this.currentScreen = 'newAlarm';
+                } else if (document.getElementById('locationAlarmScreen')?.style.display === 'block') {
+                    this.currentScreen = 'locationAlarm';
+                } else if (document.getElementById('normalAlarmScreen')?.style.display === 'block') {
+                    this.currentScreen = 'normalAlarm';
+                } else if (document.getElementById('settingsScreen')?.style.display === 'block') {
+                    this.currentScreen = 'settings';
+                } else if (document.getElementById('notificationsScreen')?.style.display === 'block') {
+                    this.currentScreen = 'notifications';
+                }
+            }
+
+            addMessage(sender, text) {
+                if (this.isTyping) {
+                    this.removeTypingIndicator();
+                }
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                messageDiv.textContent = text;
+                this.assistantMessages.appendChild(messageDiv);
+                this.assistantMessages.scrollTop = this.assistantMessages.scrollHeight;
+                
+                // Guardar en historial
+                this.conversation.push({ 
+                    sender, 
+                    text, 
+                    time: new Date(),
+                    screen: this.currentScreen 
+                });
+            }
+
+            showTypingIndicator() {
+                this.isTyping = true;
+                const typingDiv = document.createElement('div');
+                typingDiv.className = 'typing-indicator';
+                typingDiv.innerHTML = `
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                `;
+                typingDiv.id = 'typingIndicator';
+                this.assistantMessages.appendChild(typingDiv);
+                this.assistantMessages.scrollTop = this.assistantMessages.scrollHeight;
+            }
+
+            removeTypingIndicator() {
+                const indicator = document.getElementById('typingIndicator');
+                if (indicator) {
+                    indicator.remove();
+                }
+                this.isTyping = false;
+            }
+
+            sendMessage() {
+                const userText = this.assistantInput.value.trim();
+                if (!userText) return;
+                
+                // Añadir mensaje del usuario
+                this.addMessage('user', userText);
+                this.assistantInput.value = '';
+                
+                // Mostrar indicador de escritura
+                this.showTypingIndicator();
+                
+                // Procesar con IA después de un pequeño retraso
+                setTimeout(() => {
+                    this.processUserMessage(userText);
+                }, 800);
+            }
+
+            processUserMessage(message) {
+                const lowerMessage = message.toLowerCase();
+                this.updateCurrentScreen();
+                
+                // Respuestas inteligentes basadas en contexto
+                let response = '';
+                
+                if (lowerMessage.includes('hola') || lowerMessage.includes('hola')) {
+                    response = '¡Hola de nuevo! 😊 ¿En qué puedo ayudarte hoy?';
+                }
+                else if (lowerMessage.includes('crear') || lowerMessage.includes('nueva alarma')) {
+                    response = this.getCreateAlarmResponse(lowerMessage);
+                }
+                else if (lowerMessage.includes('activar') || lowerMessage.includes('desactivar')) {
+                    response = this.getToggleAlarmResponse(lowerMessage);
+                }
+                else if (lowerMessage.includes('configurar') || lowerMessage.includes('ajustes') || lowerMessage.includes('configuración')) {
+                    response = this.getSettingsResponse(lowerMessage);
+                }
+                else if (lowerMessage.includes('ubicación') || lowerMessage.includes('ubicacion') || lowerMessage.includes('lugar')) {
+                    response = '📍 Para alarmas por ubicación:\n1. Selecciona "Configurar alarma por ubicación"\n2. Introduce la dirección\n3. Establece el radio de activación\n4. Configura acciones de entrada/salida\n\n¿Necesitas ayuda con algún paso específico?';
+                }
+                else if (lowerMessage.includes('ayuda') || lowerMessage.includes('cómo') || lowerMessage.includes('como usar')) {
+                    response = '📚 **Guía rápida de SmartAlarm:**\n\n🔹 **Alarmas normales:** Para horarios fijos\n🔹 **Alarmas por ubicación:** Se activan al entrar/salir de lugares\n🔹 **Notificaciones:** Estado de todas tus alarmas\n🔹 **Ajustes:** Personaliza idioma, accesibilidad y más\n\n¿Sobre qué función quieres más información?';
+                }
+                else if (lowerMessage.includes('dalton') || lowerMessage.includes('color')) {
+                    response = '🌈 **Filtros de daltonismo:**\nVe a Ajustes → Filtro de Daltonismo\n\nOpciones disponibles:\n• Protanopía (rojo-verde)\n• Deuteranopía (rojo-verde)\n• Tritanopía (azul-amarillo)\n\n¿Quieres que active algún filtro por ti?';
+                }
+                else if (lowerMessage.includes('idioma') || lowerMessage.includes('lenguaje')) {
+                    response = '🌐 **Cambiar idioma:**\n1. Ve a Ajustes\n2. En "Idioma"\n3. Selecciona tu preferido\n\nIdiomas disponibles: Español, English, Deutsch, Italiano, Portugués y más.';
+                }
+                else {
+                    response = '🤔 Entiendo que preguntas sobre: "' + message + '"\n\nPuedo ayudarte con:\n• Creación y gestión de alarmas\n• Configuración por ubicación\n• Ajustes de accesibilidad\n• Solución de problemas\n\n¿Podrías reformular tu pregunta?';
+                }
+                
+                // Simular tiempo de procesamiento
+                setTimeout(() => {
+                    this.removeTypingIndicator();
+                    this.addMessage('assistant', response);
+                }, 1200);
+            }
+
+            getCreateAlarmResponse(message) {
+                if (this.currentScreen === 'newAlarm') {
+                    return '👌 ¡Perfecto! Ya estás en la pantalla de nueva alarma.\n\nElige entre:\n📍 **Alarma por ubicación** (se activa al entrar/salir de sitios)\n⏰ **Alarma normal** (para horarios fijos)\n\n¿Necesitas explicación sobre alguna opción específica?';
+                }
+                
+                if (message.includes('ubicación') || message.includes('ubicacion')) {
+                    return '📍 Para crear alarma por ubicación:\n1. Haz clic en "Añadir alarma"\n2. Elige "Configurar alarma por ubicación"\n3. Introduce la dirección\n4. Establece hora y opciones\n\n¿Quieres que te guíe paso a paso?';
+                } else {
+                    return '⏰ Para crear alarma normal:\n1. Haz clic en "Añadir alarma"\n2. Elige "Configurar alarma normal"\n3. Establece la hora\n4. Configura días de repetición\n5. Ajusta tono y volumen\n\n¿Listo para comenzar?';
+                }
+            }
+
+            getToggleAlarmResponse(message) {
+                const alarmNames = ['salon', 'oficina', 'garage', 'habitacion'];
+                let foundAlarm = null;
+                
+                for (const alarm of alarmNames) {
+                    if (message.includes(alarm)) {
+                        foundAlarm = alarm;
+                        break;
+                    }
+                }
+                
+                if (foundAlarm) {
+                    const action = message.includes('activar') ? 'activar' : 'desactivar';
+                    return `⚡ Voy a ${action} la alarma de "${foundAlarm}".\n\nPara confirmar, ve a la pantalla principal y haz clic en el estado de la alarma.\n\n¿Necesitas que te muestre cómo?`;
+                } else {
+                    return '📱 **Tus alarmas actuales:**\n\n• 🛋️ Salon (07:30, desactivada)\n• 🏢 Oficina (09:00, activa)\n• 🚗 Garage (08:00, activa)\n• 🛏️ Habitacion (07:00, activa)\n\nDi "activar [nombre]" o "desactivar [nombre]" para modificarlas.';
+                }
+            }
+
+            getSettingsResponse(message) {
+                if (this.currentScreen === 'settings') {
+                    return '⚙️ ¡Ya estás en Ajustes! Aquí puedes configurar:\n\n🌐 Idioma\n🌈 Filtros de daltonismo\n🔊 Volumen\n🗣️ Control por voz\n🔔 Notificaciones\n\n¿Sobre qué ajuste necesitas ayuda?';
+                }
+                
+                return '⚙️ **Configuración de SmartAlarm:**\n\nVe a Ajustes para personalizar:\n• Preferencias de idioma\n• Filtros de accesibilidad visual\n• Opciones de sonido y vibración\n• Control por voz y gestos\n\n¿Quieres que te lleve a la pantalla de ajustes?';
+            }
+        }
+
+        // ===== CÓDIGO ORIGINAL DE SMARTALARM =====
+        
+        // Función para mostrar/ocultar barra de navegación
+        function toggleNavigation(show) {
+            const navBar = document.getElementById('navBar');
+            const container = document.getElementById('mainContainer');
+            
+            if (show) {
+                navBar.classList.remove('hidden');
+                container.classList.add('with-nav');
+            } else {
+                navBar.classList.add('hidden');
+                container.classList.remove('with-nav');
+            }
+        }
+
+        // Navegación entre pantallas de registro y login
+        document.getElementById('goToRegister').addEventListener('click', function() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('registerScreen').style.display = 'block';
+            toggleNavigation(false);
+        });
+        
+        document.getElementById('goToLogin').addEventListener('click', function() {
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            toggleNavigation(false);
+        });
+        
+        // Navegación después de login/registro
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            toggleNavigation(true);
+            setActiveNav('navHome');
+        });
+        
+        document.getElementById('registerBtn').addEventListener('click', function() {
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('mainScreen').style.display = 'block';
+            toggleNavigation(true);
+            setActiveNav('navHome');
+        });
+        
+        // Navegación para añadir nueva alarma
+        document.getElementById('addAlarmBtn').addEventListener('click', function() {
+            document.getElementById('mainScreen').style.display = 'none';
+            document.getElementById('newAlarmScreen').style.display = 'block';
+            toggleNavigation(true);
+        });
+        
+        document.getElementById('locationAlarm').addEventListener('click', function() {
+            document.getElementById('newAlarmScreen').style.display = 'none';
+            document.getElementById('locationAlarmScreen').style.display = 'block';
+            toggleNavigation(true);
+        });
+        
+        document.getElementById('normalAlarm').addEventListener('click', function() {
+            document.getElementById('newAlarmScreen').style.display = 'none';
+            document.getElementById('normalAlarmScreen').style.display = 'block';
+            toggleNavigation(true);
+        });
+        
+        // Navegación de la barra inferior
+        document.getElementById('navHome').addEventListener('click', function() {
+            showScreen('mainScreen');
+            setActiveNav('navHome');
+            toggleNavigation(true);
+        });
+        
+        document.getElementById('navNotifications').addEventListener('click', function() {
+            showScreen('notificationsScreen');
+            setActiveNav('navNotifications');
+            toggleNavigation(true);
+        });
+        
+        document.getElementById('navSettings').addEventListener('click', function() {
+            showScreen('settingsScreen');
+            setActiveNav('navSettings');
+            toggleNavigation(true);
+        });
+        
+        // Función para cerrar sesión
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            const screens = document.querySelectorAll('.main-screen, .notifications-screen, .settings-screen, .new-alarm-screen, #locationAlarmScreen, #normalAlarmScreen, .register-screen');
+            screens.forEach(screen => {
+                screen.style.display = 'none';
+            });
+            
+            document.getElementById('loginScreen').style.display = 'block';
+            toggleNavigation(false);
+            setActiveNav('navHome');
+            
+            // Ocultar asistente si está visible
+            if (window.smartAlarmAssistant) {
+                window.smartAlarmAssistant.hideAssistant();
+            }
+        });
+        
+        // Función para mostrar pantallas según la selección
+        function showScreen(screenId) {
+            const screens = document.querySelectorAll('.main-screen, .notifications-screen, .settings-screen, .new-alarm-screen, #locationAlarmScreen, #normalAlarmScreen');
+            screens.forEach(screen => {
+                screen.style.display = 'none';
+            });
+            
+            document.getElementById(screenId).style.display = 'block';
+        }
+        
+        // Función para establecer la barra de navegación activa
+        function setActiveNav(navId) {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            document.getElementById(navId).classList.add('active');
+        }
+        
+        // Selección de idioma
+        const languageOptions = document.querySelectorAll('.language-option');
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                languageOptions.forEach(opt => opt.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // funcion para inicializar los select boxes
+        function initializeSelectBoxes() {
+            const selectBoxes = document.querySelectorAll('.select-box:not(#daltonismFilter)');
+            
+            selectBoxes.forEach(selectBox => {
+                const selectHeader = selectBox.querySelector('.select-header');
+                const selectOptions = selectBox.querySelector('.select-options');
+                const options = selectOptions.querySelectorAll('.select-option');
+                
+                selectHeader.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isVisible = selectOptions.style.display === 'block';
+                    
+                    document.querySelectorAll('.select-options').forEach(opt => {
+                        if (opt !== selectOptions) {
+                            opt.style.display = 'none';
+                        }
+                    });
+                    
+                    selectOptions.style.display = isVisible ? 'none' : 'block';
+                });
+                
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const headerText = selectBox.querySelector('.select-header span:first-child');
+                        headerText.textContent = this.textContent;
+                        selectOptions.style.display = 'none';
+                    });
+                });
+            });
+        }
+        
+        // funcion para configurar el filtro de daltonismo
+        function setupDaltonismFilter() {
+            const daltonismFilter = document.getElementById('daltonismFilter');
+            const selectHeader = daltonismFilter.querySelector('.select-header');
+            const selectOptions = daltonismFilter.querySelector('.select-options');
+            const options = selectOptions.querySelectorAll('.select-option');
+            
+            selectHeader.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const isVisible = selectOptions.style.display === 'block';
+                
+                document.querySelectorAll('.select-options').forEach(opt => {
+                    if (opt !== selectOptions) {
+                        opt.style.display = 'none';
+                    }
+                });
+                
+                selectOptions.style.display = isVisible ? 'none' : 'block';
+            });
+            
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const filterType = this.getAttribute('data-filter');
+                    const filterName = this.textContent;
+                    
+                    const headerText = daltonismFilter.querySelector('.select-header span:first-child');
+                    headerText.textContent = filterName;
+                    
+                    selectOptions.style.display = 'none';
+                    
+                    applyDaltonismFilter(filterType);
+                    
+                    localStorage.setItem('daltonismFilter', filterType);
+                });
+            });
+            
+            // Cargar preferencia guardada
+            const savedFilter = localStorage.getItem('daltonismFilter') || 'none';
+            const savedOption = selectOptions.querySelector(`[data-filter="${savedFilter}"]`);
+            if (savedOption) {
+                const headerText = daltonismFilter.querySelector('.select-header span:first-child');
+                headerText.textContent = savedOption.textContent;
+                applyDaltonismFilter(savedFilter);
+            }
+        }
+
+        // Función para aplicar el filtro de daltonismo
+        function applyDaltonismFilter(filterType) {
+            const body = document.body;
+            
+            body.classList.remove(
+                'protanopia-filter',
+                'deuteranopia-filter',
+                'tritanopia-filter'
+            );
+            
+            if (filterType !== 'none') {
+                body.classList.add(`${filterType}-filter`);
+            }
+        }
+
+        // Validación de inputs de hora
+        function setupTimeInput(inputId, maxValue) {
+            const input = document.getElementById(inputId);
+            
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                if (this.value.length > 2) {
+                    this.value = this.value.slice(0, 2);
+                }
+                
+                if (this.value && parseInt(this.value) > maxValue) {
+                    this.value = maxValue.toString().padStart(2, '0');
+                }
+            });
+            
+            input.addEventListener('blur', function() {
+                if (this.value && this.value.length === 1) {
+                    this.value = '0' + this.value;
+                }
+            });
+        }
+        
+        // Configurar inputs de hora
+        setupTimeInput('normalHours', 23);
+        setupTimeInput('normalMinutes', 59);
+        setupTimeInput('locationHours', 23);
+        setupTimeInput('locationMinutes', 59);
+        
+        // Cerrar select boxes al hacer clic fuera de ellos
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.select-box')) {
+                document.querySelectorAll('.select-options').forEach(opt => {
+                    opt.style.display = 'none';
+                });
+            }
+        });
+
+        // Inicializar todas las funcionalidades
+        initializeSelectBoxes();
+        setupDaltonismFilter();
+
+        // Inicializar: ocultar barra de navegación al cargar
+        toggleNavigation(false);
+
+        // función para inicializar el asistente IA al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            window.smartAlarmAssistant = new SmartAlarmAssistant();
+        });
+    </script>
+</body>
+</html>

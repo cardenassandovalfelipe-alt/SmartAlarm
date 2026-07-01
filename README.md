@@ -4,7 +4,7 @@ Hecho por:
 Andrés Felipe Cárdenas Sandoval
 Este proyecto se basa en la creación de una alarma que sea accesible para todo tipo de público, teniendo asi funcionalidades integradas como filtro de daltonismo
 
-Para ver este proyecto en acción copia y pega este enlace en tu navegador
+Para ver este proyecto en acción copia y pega este enlace en tu navegador (todo junto)
 
 htmlpreview.github.io/?https://github.com/cardenassandovalfelipe-alt/SmartAlarm/blob/main/SmartAlarm.html
 
